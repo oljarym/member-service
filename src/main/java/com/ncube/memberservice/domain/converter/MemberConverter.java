@@ -43,7 +43,7 @@ public final class MemberConverter {
 
     public static MemberVO memberToMemberVO(Member member) {
         MemberVO memberVO = new MemberVO();
-        if (Objects.nonNull(member)) {
+        if (Objects.nonNull(member) && Objects.nonNull(member.get_id())) {
             memberVO.setId(member.get_id().toHexString());
             memberVO.setFirstName(member.getFirstName());
             memberVO.setLastName(member.getLastName());

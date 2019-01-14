@@ -10,7 +10,7 @@ public interface MemberService {
 
     MemberVO findById(String id, Boolean loadImage);
 
-    void update(MemberVO member, String id);
+    boolean update(MemberVO member, String id);
 
     boolean deleteMembersByActive(Boolean isActive);
 

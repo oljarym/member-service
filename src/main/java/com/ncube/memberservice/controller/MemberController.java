@@ -40,19 +40,25 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "Find the member by id", response = ResponseEntity.class)
+    @ApiOperation(value = "Find the member by id. " +
+            "Optional parameter loadWithImage allows get member data without loading image (if exist)", response = ResponseEntity.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<MemberVO> findMember(@PathVariable String id,
-                                               @RequestParam(required = false, value = "loadImage") Boolean loadImage) {
+                                               @RequestParam(required = false, value = "loadWithImage") Boolean loadImage) {
+        if (Objects.isNull(loadImage)) {
+            loadImage = true;
+        }
         MemberVO member = memberService.findById(id, loadImage);
-        return ResponseEntity.ok(member);
+        return Objects.nonNull(member.getId())
+                ? ResponseEntity.ok(member)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ApiOperation(value = "Update the member with specified id", response = ResponseEntity.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public ResponseEntity<Void> updateMember(@PathVariable String id, @RequestBody MemberVO member) {
-        memberService.update(member, id);
-        return ResponseEntity.ok().build();
+        boolean updated = memberService.update(member, id);
+        return updated ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ApiOperation(value = "Delete all members with are not active", response = ResponseEntity.class)
@@ -62,9 +68,10 @@ public class MemberController {
         return result ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @ApiOperation(value = "Get list of all members", response = ResponseEntity.class)
+    @ApiOperation(value = "Get the list of all members. " +
+            "Optional parameter loadWithImage allows get members data without loading images (if exist)", response = ResponseEntity.class)
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<MemberVO>> findAllMembers(@RequestParam(required = false, value = "loadImage") Boolean loadImage) {
+    public ResponseEntity<List<MemberVO>> findAllMembers(@RequestParam(required = false, value = "loadWithImage") Boolean loadImage) {
         if (Objects.isNull(loadImage)) {
             loadImage = true;
         }

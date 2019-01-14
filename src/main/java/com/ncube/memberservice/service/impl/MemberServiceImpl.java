@@ -38,18 +38,20 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> member = repository.findById(new ObjectId(id));
         Member stub = new Member();
         return loadImage
-                ? memberToMemberVOwithImage(member.orElse(new Member()))
+                ? memberToMemberVOwithImage(member.orElse(stub))
                 : memberToMemberVO(member.orElse(stub));
     }
 
     @Override
-    public void update(MemberVO memberVo, String id) {
-        Member memberData = memberVOtoMember(memberVo);
+    public boolean update(MemberVO memberVo, String id) {
         Member member = repository.findBy_id(new ObjectId(id));
+        Member saved = new Member();
         if (Objects.nonNull(member)) {
+            Member memberData = memberVOtoMember(memberVo);
             memberData.set_id(member.get_id());
-            repository.save(memberData);
+            saved = repository.save(memberData);
         }
+        return Objects.nonNull(saved.get_id());
     }
 
     @Override
@@ -66,7 +68,6 @@ public class MemberServiceImpl implements MemberService {
         return loadImage
                 ? members.stream().map(MemberConverter::memberToMemberVOwithImage).collect(Collectors.toList())
                 : members.stream().map(MemberConverter::memberToMemberVO).collect(Collectors.toList());
-
     }
 
 }
