@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo:3.2.4
+    ports:
+    - 27017
+  member-service:
+    image: olharymarchuk/member-service
+    restart: always
+    command: mvn clean spring-boot:run
+    depends_on:
+    - mongo
+    links:
+    - mongo
+    ports:
+    - 8080:8080

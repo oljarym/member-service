@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: member-service
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      database: members
