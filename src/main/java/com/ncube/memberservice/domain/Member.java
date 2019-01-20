@@ -122,4 +122,19 @@ public class Member {
     public int hashCode() {
         return Objects.hash(_id, firstName, lastName, birthDate, postalCode, active, image, imageName, imageFormat);
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "_id=" + _id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate=" + birthDate +
+                ", postalCode='" + postalCode + '\'' +
+                ", active=" + active +
+                ", image=" + image +
+                ", imageName='" + imageName + '\'' +
+                ", imageFormat='" + imageFormat + '\'' +
+                '}';
+    }
 }

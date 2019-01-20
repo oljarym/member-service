@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ncube.memberservice.domain.converter.MemberConverter.memberToMemberVO;
-import static com.ncube.memberservice.domain.converter.MemberConverter.memberToMemberVOwithImage;
-import static com.ncube.memberservice.domain.converter.MemberConverter.memberVOtoMember;
+import static com.ncube.memberservice.domain.converter.MemberConverter.memberToMemberVoWithImage;
+import static com.ncube.memberservice.domain.converter.MemberConverter.memberVoToMember;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -30,16 +29,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void create(MemberVO member) {
-        repository.save(memberVOtoMember(member));
+        repository.save(memberVoToMember(member));
     }
 
     @Override
     public MemberVO findById(String id, Boolean loadImage) {
-        Optional<Member> member = repository.findById(new ObjectId(id));
-        Member stub = new Member();
+        Member member = repository.findBy_id(new ObjectId(id));
         return loadImage
-                ? memberToMemberVOwithImage(member.orElse(stub))
-                : memberToMemberVO(member.orElse(stub));
+                ? memberToMemberVoWithImage(member)
+                : memberToMemberVO(member);
     }
 
     @Override
@@ -47,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = repository.findBy_id(new ObjectId(id));
         Member saved = new Member();
         if (Objects.nonNull(member)) {
-            Member memberData = memberVOtoMember(memberVo);
+            Member memberData = memberVoToMember(memberVo);
             memberData.set_id(member.get_id());
             saved = repository.save(memberData);
         }
@@ -66,8 +64,7 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberVO> findAll(Boolean loadImage) {
         List<Member> members = repository.findAll();
         return loadImage
-                ? members.stream().map(MemberConverter::memberToMemberVOwithImage).collect(Collectors.toList())
+                ? members.stream().map(MemberConverter::memberToMemberVoWithImage).collect(Collectors.toList())
                 : members.stream().map(MemberConverter::memberToMemberVO).collect(Collectors.toList());
     }
-
 }
